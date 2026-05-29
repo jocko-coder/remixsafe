@@ -74,7 +74,7 @@
           <span class="val mono" id="count-val">5</span>
         </div>
         <p class="dim" style="font-size:.82rem;margin-top:8px">
-          Each variant uses <span class="mono" style="color:var(--accent)">1 remix</span> from your balance.
+          Beta: unlimited free remixes.
         </p>
       </div>
 
@@ -141,14 +141,13 @@
 <script src="/app/shared.js"></script>
 <script>
 let currentFile = null;
-let currentBalance = 0;
+let currentBalance = 999; // Beta: unlimited free
 
 (async () => {
   const session = await requireAuth();
   if (!session) return;
-  currentBalance = await fetchBalance();
-  document.getElementById('nav-mount').innerHTML = renderNav('dash', currentBalance);
-  document.getElementById('balance-big').textContent = currentBalance;
+  document.getElementById('nav-mount').innerHTML = renderNav('dash', '∞');
+  document.getElementById('balance-big').textContent = '∞';
   updateGenerateState();
   loadJobs();
 })();
