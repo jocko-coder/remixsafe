@@ -1,0 +1,12 @@
+app = "remixsafe-worker"
+primary_region = "sin"
+
+[build]
+
+[env]
+  NODE_ENV = "production"
+
+[[vm]]
+  memory = "1gb"
+  cpu_kind = "shared"
+  cpus = 1

@@ -1,22 +1,21 @@
-# RemixSafe video worker
-FROM node:20-alpine
+FROM node:20-slim
 
-# ffmpeg is the heart of the worker
-RUN apk add --no-cache ffmpeg ca-certificates tini
+# Install ffmpeg and minimal deps
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ffmpeg ca-certificates tini \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Install deps first for better layer caching
-COPY package.json package-lock.json* ./
+# Install node deps first for layer caching
+COPY package.json ./
 RUN npm install --omit=dev --no-audit --no-fund
 
-# Copy app code
-COPY . .
+# Copy source
+COPY src ./src
 
-# Fly.io / generic env
 ENV NODE_ENV=production
-ENV WORK_DIR=/tmp/remixsafe
 
-# tini reaps zombie ffmpeg processes cleanly
-ENTRYPOINT ["/sbin/tini","--"]
-CMD ["node","index.js"]
+# tini reaps zombie ffmpeg processes
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["node", "src/index.js"]
