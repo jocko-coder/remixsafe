@@ -95,11 +95,16 @@ function render(job) {
     label.textContent = 'queued';
     stage.textContent = 'Waiting for worker pickup…';
   } else if (job.status === 'processing') {
-    const done = (job.variant_urls || []).length;
+    // Parse progress from error_message e.g. "2/5 variants encoded"
+    let done = 0;
+    if (job.error_message) {
+      const m = job.error_message.match(/^(\d+)\/(\d+)/);
+      if (m) done = parseInt(m[1], 10);
+    }
     const pct = Math.max(15, Math.round((done / job.variant_count) * 100));
     bar.style.width = pct + '%';
     label.textContent = `${done} / ${job.variant_count}`;
-    stage.textContent = `Encoding variant ${done + 1} — ffmpeg passes (hue, audio pitch, crop, metadata strip)…`;
+    stage.textContent = job.error_message || `Encoding variants — ffmpeg passes (hue, audio pitch, crop, metadata strip)…`;
   } else if (job.status === 'done') {
     bar.style.width = '100%';
     label.textContent = `${job.variant_count} / ${job.variant_count}`;
@@ -121,12 +126,40 @@ function render(job) {
   const grid = document.getElementById('var-grid');
   const urls = job.variant_urls || [];
   const slots = [];
+  // When done, variant_urls holds one ZIP url (not per-variant). Show all cards as ready.
+  const isDone = job.status === 'done';
+  const zipUrl = isDone && urls.length ? urls[0] : null;
+
+  // Parse progress count from error_message during processing
+  let encodedCount = 0;
+  if (job.status === 'processing' && job.error_message) {
+    const m = job.error_message.match(/^(\d+)\/(\d+)/);
+    if (m) encodedCount = parseInt(m[1], 10);
+  }
+
   for (let i = 0; i < job.variant_count; i++) {
-    const url = urls[i];
-    const ready = !!url;
+    let thumbLabel, actionBtn;
+    if (isDone) {
+      thumbLabel = '✓ ready';
+      actionBtn = `<a class="btn btn-sm" style="margin-top:10px;width:100%" href="${zipUrl}" download>Download ZIP</a>`;
+    } else if (job.status === 'processing') {
+      if (i < encodedCount) {
+        thumbLabel = '✓ encoded';
+        actionBtn = '';
+      } else if (i === encodedCount) {
+        thumbLabel = 'encoding…';
+        actionBtn = '';
+      } else {
+        thumbLabel = 'pending';
+        actionBtn = '';
+      }
+    } else {
+      thumbLabel = 'pending';
+      actionBtn = '';
+    }
     slots.push(`
       <div class="var-card">
-        <div class="var-thumb">${ready ? '▶ preview' : (job.status === 'processing' && i === urls.length ? 'encoding…' : 'pending')}</div>
+        <div class="var-thumb">${thumbLabel}</div>
         <div class="var-body">
           <div class="name">Variant ${String(i+1).padStart(2,'0')}</div>
           <div class="diffs">
@@ -134,7 +167,7 @@ function render(job) {
             <span>hash Δ ${(Math.random()*4+1).toFixed(1)}°</span>
             <span>caption rev ${String.fromCharCode(97 + (i % 26))}</span>
           </div>
-          ${ready ? `<a class="btn btn-sm" style="margin-top:10px;width:100%" href="${url}" download>Download MP4</a>` : ''}
+          ${actionBtn}
         </div>
       </div>
     `);
