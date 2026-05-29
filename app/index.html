@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard — RemixSafe</title>
+<meta name="theme-color" content="#0A0B0D">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A0B0D'/%3E%3Cpath d='M8 22V10h6.2a3.8 3.8 0 0 1 1.6 7.25L19 22h-3l-2.8-4.6H11V22H8Zm3-7h2.8a1.4 1.4 0 0 0 0-2.8H11V15Z' fill='%23C6FF3D'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/theme.css">
+</head>
+<body>
+
+<div id="nav-mount"></div>
+
+<main class="container page">
+  <div class="page-head">
+    <div>
+      <h1>Dashboard</h1>
+      <p class="dim" style="margin-top:6px">Upload a video. Pick a preset. Get N postable variants.</p>
+    </div>
+    <span class="mono dim" style="font-size:12px">// beta — unlimited free</span>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:40px">
+
+    <!-- LEFT: upload + config -->
+    <div class="card">
+      <div class="section-title">// new job</div>
+
+      <label class="dropzone" id="dropzone" for="file-input">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <div id="dz-label"><strong>Drop a video here</strong> or click to browse</div>
+        <div class="hint">MP4, MOV, AVI · up to 200&nbsp;MB</div>
+        <input id="file-input" type="file" accept="video/mp4,video/quicktime,video/x-msvideo" hidden>
+      </label>
+
+      <div style="margin-top:24px">
+        <div class="section-title">// platform preset</div>
+        <div class="preset-grid">
+          <label class="preset">
+            <input type="radio" name="preset" value="tiktok" checked>
+            <div class="preset-inner">
+              <span class="icon">◆</span>
+              <span class="name">TikTok</span>
+              <span class="meta">9:16 · 60s · 5–8 Mbps</span>
+            </div>
+          </label>
+          <label class="preset">
+            <input type="radio" name="preset" value="shorts">
+            <div class="preset-inner">
+              <span class="icon">▶</span>
+              <span class="name">YT Shorts</span>
+              <span class="meta">9:16 · 60s · 8–12 Mbps</span>
+            </div>
+          </label>
+          <label class="preset">
+            <input type="radio" name="preset" value="reels">
+            <div class="preset-inner">
+              <span class="icon">○</span>
+              <span class="name">Reels</span>
+              <span class="meta">9:16 · 90s · 5–8 Mbps</span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div style="margin-top:24px">
+        <div class="section-title">// variant count</div>
+        <div class="slider-wrap">
+          <input type="range" id="count" min="1" max="10" value="5">
+          <span class="val mono" id="count-val">5</span>
+        </div>
+        <p class="dim" style="font-size:.82rem;margin-top:8px">
+          Each variant uses <span class="mono" style="color:var(--accent)">1 remix</span> from your balance.
+        </p>
+      </div>
+
+      <button id="generate" class="btn btn-primary" style="margin-top:24px;width:100%;padding:14px" disabled>
+        Generate variants
+      </button>
+    </div>
+
+    <!-- RIGHT: tips / balance card -->
+    <div class="card card-2" style="display:flex;flex-direction:column;gap:18px">
+      <div class="section-title">// balance</div>
+      <div style="font-family:'Geist',sans-serif;font-size:2.4rem;font-weight:700;letter-spacing:-.03em" id="balance-big">—</div>
+      <div class="dim" style="font-size:.85rem">remixes available</div>
+
+      <hr style="border:0;border-top:1px solid var(--border);margin:8px 0">
+
+      <div class="section-title">// how it works</div>
+      <ol style="list-style:none;display:flex;flex-direction:column;gap:10px;color:var(--text-dim);font-size:.88rem;counter-reset:s">
+        <li style="counter-increment:s">
+          <span class="mono" style="color:var(--accent)">01</span> Upload source video
+        </li>
+        <li style="counter-increment:s">
+          <span class="mono" style="color:var(--accent)">02</span> We perturb audio, shift visual hash, strip metadata
+        </li>
+        <li style="counter-increment:s">
+          <span class="mono" style="color:var(--accent)">03</span> Each variant gets a fresh fingerprint per platform
+        </li>
+        <li style="counter-increment:s">
+          <span class="mono" style="color:var(--accent)">04</span> Download ZIP, schedule, post
+        </li>
+      </ol>
+
+      <a href="/app/billing.html" class="btn btn-sm" style="margin-top:auto">Manage plan</a>
+    </div>
+  </div>
+
+  <!-- RECENT JOBS -->
+  <div class="card" style="padding:0;overflow:hidden">
+    <div style="padding:20px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+      <div class="section-title" style="margin:0">// recent jobs</div>
+      <button class="btn btn-sm btn-ghost" onclick="loadJobs()">Refresh</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Source</th>
+            <th>Preset</th>
+            <th>Variants</th>
+            <th>Status</th>
+            <th style="text-align:right">Action</th>
+          </tr>
+        </thead>
+        <tbody id="jobs-tbody">
+          <tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:40px">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/app/shared.js"></script>
+<script>
+let currentFile = null;
+let currentBalance = 0;
+
+(async () => {
+  const session = await requireAuth();
+  if (!session) return;
+  currentBalance = await fetchBalance();
+  document.getElementById('nav-mount').innerHTML = renderNav('dash', currentBalance);
+  document.getElementById('balance-big').textContent = currentBalance;
+  updateGenerateState();
+  loadJobs();
+})();
+
+// ----- File picker / dropzone -----
+const dz = document.getElementById('dropzone');
+const fi = document.getElementById('file-input');
+const dzLabel = document.getElementById('dz-label');
+
+fi.addEventListener('change', e => handleFile(e.target.files[0]));
+['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('drag'); }));
+['dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('drag'); }));
+dz.addEventListener('drop', e => { if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+
+function handleFile(f) {
+  if (!f) return;
+  if (f.size > 200 * 1024 * 1024) { toast('File too large (max 200 MB)', 'error'); return; }
+  if (!/^video\//.test(f.type)) { toast('Please upload a video file', 'error'); return; }
+  currentFile = f;
+  dzLabel.innerHTML = `<strong>${f.name}</strong>`;
+  document.querySelector('.dropzone .hint').textContent = fmtBytes(f.size) + ' · ready to upload';
+  updateGenerateState();
+}
+
+// ----- Slider -----
+const cnt = document.getElementById('count');
+const cntVal = document.getElementById('count-val');
+cnt.addEventListener('input', () => { cntVal.textContent = cnt.value; updateGenerateState(); });
+
+function updateGenerateState() {
+  const btn = document.getElementById('generate');
+  const needed = parseInt(cnt.value, 10);
+  if (!currentFile) { btn.disabled = true; btn.textContent = 'Choose a video first'; return; }
+  if (currentBalance < needed) { btn.disabled = true; btn.textContent = `Need ${needed} remixes (have ${currentBalance})`; return; }
+  btn.disabled = false; btn.textContent = `Generate ${needed} variant${needed>1?'s':''}`;
+}
+
+// ----- Generate -----
+document.getElementById('generate').addEventListener('click', async () => {
+  const btn = document.getElementById('generate');
+  const preset = document.querySelector('input[name="preset"]:checked').value;
+  const variant_count = parseInt(cnt.value, 10);
+
+  btn.disabled = true; btn.textContent = 'Creating job…';
+  try {
+    const { job, upload_url, upload_path } = await api('/create-job', {
+      method: 'POST',
+      body: JSON.stringify({ preset, variant_count, filename: currentFile.name, size: currentFile.size })
+    });
+
+    btn.textContent = 'Uploading video…';
+    // Upload via Supabase signed URL
+    const upRes = await fetch(upload_url, {
+      method: 'PUT',
+      headers: { 'Content-Type': currentFile.type || 'video/mp4' },
+      body: currentFile
+    });
+    if (!upRes.ok) throw new Error('Upload failed');
+
+    toast('Job queued — redirecting…', 'success');
+    setTimeout(() => window.location.href = `/app/job.html?id=${job.id}`, 600);
+  } catch (err) {
+    toast(err.message || 'Job creation failed', 'error');
+    btn.disabled = false;
+    updateGenerateState();
+  }
+});
+
+// ----- Jobs table -----
+async function loadJobs() {
+  const tbody = document.getElementById('jobs-tbody');
+  try {
+    const { data: jobs, error } = await window.sb
+      .from('jobs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if (error) throw error;
+    if (!jobs || jobs.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-dim);padding:40px">No jobs yet — upload your first video above.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = jobs.map(j => `
+      <tr>
+        <td class="mono dim">${fmtDate(j.created_at)}</td>
+        <td>${(j.source_url||'').split('/').pop() || 'source.mp4'}</td>
+        <td class="mono">${j.preset}</td>
+        <td class="mono">${j.variant_count}×</td>
+        <td><span class="status status-${j.status}">${j.status}</span></td>
+        <td style="text-align:right">
+          ${j.status === 'done'
+            ? `<a class="btn btn-sm" href="/app/job.html?id=${j.id}">Open</a>`
+            : `<a class="btn btn-sm btn-ghost" href="/app/job.html?id=${j.id}">View</a>`}
+        </td>
+      </tr>
+    `).join('');
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--danger);padding:40px">${err.message}</td></tr>`;
+  }
+}
+</script>
+</body>
+</html>

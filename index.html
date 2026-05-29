@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RemixSafe — Repurpose Video for TikTok, Reels & Shorts Without Duplicate Flags</title>
+<meta name="description" content="RemixSafe generates platform-unique variants of your video so TikTok, Instagram Reels, and YouTube Shorts each see fresh content. Built for faceless channels and social agencies. Start free.">
+<link rel="canonical" href="https://remixsafe.com/">
+<meta property="og:title" content="RemixSafe — Turn 1 Video Into 50 Platform-Unique Variants">
+<meta property="og:description" content="The variant engine for faceless channels and social agencies. Perturbed audio, shifted visual hash, rewritten captions.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://remixsafe.com/">
+<meta property="og:image" content="https://remixsafe.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RemixSafe — Turn 1 Video Into 50 Platform-Unique Variants">
+<meta name="twitter:description" content="The variant engine for faceless channels and social agencies. Start free.">
+<meta name="theme-color" content="#0A0B0D">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A0B0D'/%3E%3Cpath d='M8 22V10h6.2a3.8 3.8 0 0 1 1.6 7.25L19 22h-3l-2.8-4.6H11V22H8Zm3-7h2.8a1.4 1.4 0 0 0 0-2.8H11V15Z' fill='%23C6FF3D'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"SoftwareApplication",
+  "name":"RemixSafe",
+  "operatingSystem":"Web",
+  "applicationCategory":"MultimediaApplication",
+  "description":"RemixSafe turns one source video into N platform-unique variants so TikTok, YouTube Shorts and Instagram Reels each see fresh content.",
+  "offers":[
+    {"@type":"Offer","name":"Solo","price":"29","priceCurrency":"USD"},
+    {"@type":"Offer","name":"Operator","price":"89","priceCurrency":"USD"},
+    {"@type":"Offer","name":"Agency","price":"249","priceCurrency":"USD"}
+  ],
+  "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","ratingCount":"128"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"Isn't this just spam?","acceptedAnswer":{"@type":"Answer","text":"No. Every output is a legitimate creative variation — different audio mix, recut pacing, rewritten hook. You bring the idea. We kill the busywork."}},
+    {"@type":"Question","name":"I already use Opus Clip / Repurpose.io.","acceptedAnswer":{"@type":"Answer","text":"Those tools repurpose long-form into shorts. They don't touch audio fingerprints or frame hashes. Use them together — we're the layer that makes output postable at scale."}},
+    {"@type":"Question","name":"Is $89/mo worth it?","acceptedAnswer":{"@type":"Answer","text":"You're spending 8+ hours a week in CapCut. At $20/hr that's $640/month of your time. Operator pays for itself the first week."}},
+    {"@type":"Question","name":"Does it work for all platforms?","acceptedAnswer":{"@type":"Answer","text":"Yes — TikTok, YouTube Shorts, and Instagram Reels each get their own preset (aspect ratio, bitrate, duration cap)."}}
+  ]
+}
+</script>
+
+<style>
+:root{
+  --bg:#0A0B0D;
+  --surface:#111317;
+  --surface-2:#181B21;
+  --border:#23272F;
+  --text:#ECEEF2;
+  --text-dim:#8A8F99;
+  --accent:#C6FF3D;
+  --accent-2:#FF4D2E;
+  --maxw:1240px;
+  --pad:24px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{
+  font-size:clamp(1rem,1.05vw,1.125rem);
+  line-height:1.55;
+  position:relative;
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  pointer-events:none;
+  z-index:1;
+  opacity:.04;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+a{color:inherit;text-decoration:none}
+img,svg{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+.container{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative;z-index:2}
+
+h1,h2,h3,h4{font-family:'Geist','Inter',sans-serif;font-weight:700;letter-spacing:-.02em;color:var(--text)}
+.mono{font-family:'JetBrains Mono',monospace;font-weight:500;letter-spacing:.02em}
+.dim{color:var(--text-dim)}
+
+/* NAV */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  backdrop-filter:blur(14px);
+  background:rgba(10,11,13,.72);
+  border-bottom:1px solid var(--border);
+  transition:transform .2s ease;
+}
+.nav-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;
+}
+.brand{font-family:'Geist',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+.brand .dot{width:8px;height:8px;border-radius:2px;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+.brand .chev{color:var(--text-dim);font-weight:500;margin-left:2px}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{color:var(--text-dim);font-size:.9rem;transition:color .15s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{display:flex;gap:14px;align-items:center}
+.nav-signin{color:var(--text-dim);font-size:.9rem}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 18px;border-radius:8px;
+  font-weight:500;font-size:.92rem;
+  background:var(--surface-2);color:var(--text);
+  border:1px solid var(--border);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  transition:background .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease;
+  position:relative;
+}
+.btn:hover{background:var(--accent);color:var(--bg);box-shadow:0 0 0 4px rgba(198,255,61,.15),inset 0 1px 0 rgba(255,255,255,.2)}
+.btn-primary{background:var(--accent);color:var(--bg);border-color:transparent}
+.btn-primary:hover{background:#d8ff66;box-shadow:0 0 0 6px rgba(198,255,61,.18)}
+.btn-ghost{background:transparent;border-color:var(--border)}
+.btn-ghost:hover{background:var(--surface-2);color:var(--text);box-shadow:none}
+@media(max-width:780px){.nav-links{display:none}}
+
+/* HERO */
+.hero{
+  padding:140px 0 90px;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:"";
+  position:absolute;inset:0;
+  background:radial-gradient(60% 60% at 85% 0%,rgba(198,255,61,.08),transparent 60%);
+  pointer-events:none;
+}
+.hero-grid{
+  display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;
+}
+@media(max-width:960px){.hero-grid{grid-template-columns:1fr;gap:48px}}
+
+.eyebrow{
+  display:inline-block;
+  color:var(--accent);
+  font-size:.82rem;
+  padding:6px 0;
+  border-bottom:1px solid rgba(198,255,61,.25);
+  white-space:nowrap;overflow:hidden;
+  width:0;
+  animation:typing 700ms steps(30,end) .2s forwards;
+}
+@keyframes typing{to{width:26ch}}
+
+.h1{
+  font-size:clamp(2.75rem,7vw,5rem);
+  line-height:.95;
+  letter-spacing:-.03em;
+  margin:22px 0 20px;
+}
+.h1 .line{display:block;overflow:hidden}
+.h1 .line span{
+  display:inline-block;
+  clip-path:inset(0 100% 0 0);
+  animation:reveal 700ms cubic-bezier(.65,0,.35,1) forwards;
+}
+.h1 .line:nth-child(1) span{animation-delay:.5s}
+.h1 .line:nth-child(2) span{animation-delay:.58s}
+.h1 .line:nth-child(3) span{animation-delay:.66s}
+@keyframes reveal{to{clip-path:inset(0 0 0 0)}}
+.h1 em{font-style:normal;color:var(--accent)}
+
+.hero-sub{
+  color:var(--text-dim);
+  max-width:560px;
+  font-size:1.1rem;
+  margin-bottom:32px;
+  opacity:0;animation:fadeUp .7s ease .85s forwards;
+}
+.cta-row{display:flex;gap:14px;flex-wrap:wrap;opacity:0;animation:fadeUp .7s ease 1s forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.hero-meta{margin-top:34px;display:flex;gap:24px;color:var(--text-dim);font-size:.85rem;flex-wrap:wrap;opacity:0;animation:fadeUp .7s ease 1.15s forwards}
+.hero-meta span{display:inline-flex;align-items:center;gap:8px}
+.hero-meta .pip{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+
+/* Fan visual */
+.fan{
+  position:relative;
+  height:480px;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:28px;
+  align-items:center;
+}
+@media(max-width:520px){.fan{height:420px;gap:14px;grid-template-columns:110px 1fr}.source-card{width:110px;height:180px;padding:12px}.source-card .play{width:36px;height:36px}.v-card{padding:9px;font-size:.6rem}.v-card .v-name,.v-card .v-diff{font-size:.62rem}}
+@media(max-width:380px){.variants{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr)}}
+
+.source-card{
+  width:170px;height:260px;border-radius:14px;
+  background:linear-gradient(160deg,#1a1d23,#101216);
+  border:1px solid var(--border);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 30px 60px -30px rgba(0,0,0,.7);
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:16px;
+  position:relative;
+  z-index:2;
+}
+.source-card .play{
+  width:46px;height:46px;border-radius:50%;
+  background:var(--accent);color:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  align-self:center;margin:auto 0;
+  box-shadow:0 0 24px rgba(198,255,61,.4);
+}
+.source-card .play svg{width:18px;height:18px;margin-left:3px}
+.source-card .label{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-dim);display:flex;justify-content:space-between}
+.source-card .tag{color:var(--accent)}
+
+.fan-arrow{
+  position:absolute;left:178px;top:50%;transform:translateY(-50%);
+  width:60px;height:1px;background:linear-gradient(90deg,var(--border),transparent);
+  z-index:1;
+}
+@media(max-width:520px){.fan-arrow{display:none}}
+
+.variants{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(2,1fr);
+  gap:12px;
+  height:100%;
+}
+.v-card{
+  border-radius:10px;
+  background:linear-gradient(160deg,#16191f,#0e1014);
+  border:1px solid var(--border);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  padding:12px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  color:var(--text-dim);
+  opacity:0;
+  transform:translate(-120px,0) rotate(-6deg);
+  transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);
+  position:relative;overflow:hidden;
+}
+.v-card::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(60% 40% at 50% 0%,rgba(198,255,61,.08),transparent 70%);
+  opacity:0;transition:opacity .4s;
+}
+.fan.go .v-card{opacity:1;transform:translate(0,0) rotate(0)}
+.fan.go .v-card::before{opacity:1}
+.fan.go .v-card:nth-child(1){transition-delay:0ms}
+.fan.go .v-card:nth-child(2){transition-delay:80ms}
+.fan.go .v-card:nth-child(3){transition-delay:160ms}
+.fan.go .v-card:nth-child(4){transition-delay:240ms}
+.fan.go .v-card:nth-child(5){transition-delay:320ms}
+.fan.go .v-card:nth-child(6){transition-delay:400ms}
+.v-card .v-top{display:flex;justify-content:space-between;align-items:center}
+.v-card .v-dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.v-card .v-diff{color:var(--accent);font-size:.78rem}
+.v-card .v-name{color:var(--text);font-size:.72rem}
+
+/* TICKER */
+.ticker{
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  background:var(--surface);
+  overflow:hidden;
+  position:relative;
+}
+.ticker-track{
+  display:flex;gap:48px;
+  padding:18px 0;
+  white-space:nowrap;
+  animation:scroll-left 60s linear infinite;
+  width:max-content;
+}
+.ticker-track span{
+  font-family:'JetBrains Mono',monospace;
+  color:var(--text-dim);font-size:.85rem;
+  display:inline-flex;align-items:center;gap:48px;
+}
+.ticker-track span::after{content:"·";color:var(--accent);margin-left:48px}
+@keyframes scroll-left{from{transform:translateX(0)}to{transform:translateX(-33.3333%)}}
+
+/* SECTIONS */
+section{padding:clamp(96px,12vw,160px) 0;position:relative}
+.section-eyebrow{color:var(--accent);font-size:.78rem;margin-bottom:14px;display:block}
+.section-title{font-size:clamp(2rem,4.4vw,3.4rem);line-height:1.02;letter-spacing:-.025em;max-width:780px;margin-bottom:20px}
+.section-sub{color:var(--text-dim);max-width:620px;font-size:1.05rem;margin-bottom:60px}
+
+/* BEFORE/AFTER */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:780px){.ba-grid{grid-template-columns:1fr}}
+.ba-card{
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:36px;
+  background:var(--surface);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  position:relative;overflow:hidden;
+  min-height:280px;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.ba-card .tag{
+  font-family:'JetBrains Mono',monospace;font-size:.75rem;
+  padding:5px 10px;border-radius:6px;
+  display:inline-block;align-self:flex-start;
+}
+.ba-card.before .tag{background:rgba(255,77,46,.12);color:var(--accent-2);border:1px solid rgba(255,77,46,.3)}
+.ba-card.after .tag{background:rgba(198,255,61,.12);color:var(--accent);border:1px solid rgba(198,255,61,.3)}
+.ba-card .ba-text{font-family:'Geist',sans-serif;font-size:1.5rem;line-height:1.25;font-weight:600;letter-spacing:-.015em;margin-top:24px}
+.ba-card.before .ba-text{color:#c5c8d0}
+.ba-card .ba-meter{margin-top:32px;height:6px;border-radius:4px;background:#23272F;overflow:hidden;position:relative}
+.ba-card .ba-meter::after{content:"";position:absolute;left:0;top:0;bottom:0;background:var(--accent-2);width:12%;border-radius:4px}
+.ba-card.after .ba-meter::after{background:var(--accent);width:96%}
+.ba-card .ba-foot{display:flex;justify-content:space-between;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.72rem;margin-top:10px}
+
+/* HOW IT WORKS */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:880px){.steps{grid-template-columns:1fr}}
+.step{
+  border:1px solid var(--border);background:var(--surface);
+  border-radius:16px;padding:30px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  position:relative;overflow:hidden;
+}
+.step .num{font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:30px}
+.step h3{font-size:1.4rem;letter-spacing:-.02em;margin-bottom:10px}
+.step p{color:var(--text-dim);font-size:.98rem}
+.step::after{
+  content:"";position:absolute;right:-40px;bottom:-40px;
+  width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle,rgba(198,255,61,.07),transparent 70%);
+}
+
+/* FEATURES */
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:880px){.features{grid-template-columns:1fr}}
+.feat{
+  border:1px solid var(--border);border-radius:16px;
+  padding:32px;background:var(--surface);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+.feat .ico{width:42px;height:42px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--accent);margin-bottom:22px}
+.feat h3{font-size:1.2rem;margin-bottom:10px;letter-spacing:-.015em}
+.feat p{color:var(--text-dim);font-size:.95rem}
+
+/* STATS */
+.stats{
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:80px 0;
+}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;text-align:center}
+@media(max-width:780px){.stats-grid{grid-template-columns:1fr}}
+.stat .n{font-family:'Geist',sans-serif;font-weight:700;font-size:clamp(2.6rem,5vw,4rem);color:var(--accent);letter-spacing:-.03em;line-height:1}
+.stat .l{color:var(--text-dim);margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:.85rem}
+
+/* PRICING */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:960px){.price-grid{grid-template-columns:1fr}}
+.price{
+  border:1px solid var(--border);border-radius:18px;
+  padding:34px 30px;background:var(--surface);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  display:flex;flex-direction:column;
+  transition:border-color .2s ease,box-shadow .25s ease,transform .2s ease;
+  position:relative;
+}
+.price:hover{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 20px 60px -20px rgba(198,255,61,.15);transform:translateY(-3px)}
+.price.popular{border-color:rgba(198,255,61,.5);box-shadow:0 0 0 1px rgba(198,255,61,.4),0 20px 60px -20px rgba(198,255,61,.18)}
+.price .badge{
+  position:absolute;top:-10px;right:22px;
+  background:var(--accent);color:var(--bg);
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  padding:5px 10px;border-radius:6px;font-weight:600;
+}
+.price h3{font-size:1.05rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-weight:500;letter-spacing:.02em;margin-bottom:14px;text-transform:lowercase}
+.price .amt{font-family:'Geist',sans-serif;font-weight:700;font-size:2.4rem;letter-spacing:-.03em}
+.price .amt span{font-size:1rem;color:var(--text-dim);font-weight:500}
+.price ul{list-style:none;margin:24px 0 28px;display:flex;flex-direction:column;gap:11px;flex:1}
+.price li{color:var(--text-dim);font-size:.93rem;display:flex;gap:10px}
+.price li::before{content:"";width:14px;height:14px;flex-shrink:0;margin-top:3px;border-radius:4px;background:var(--surface-2);border:1px solid var(--border);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'><path d='M2.5 6.5l2.5 2.5L9.5 4' stroke='%23C6FF3D' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:center}
+.price .btn{justify-content:center;width:100%}
+.price-note{text-align:center;color:var(--text-dim);font-size:.88rem;margin-top:32px;font-family:'JetBrains Mono',monospace}
+
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:12px;max-width:900px}
+.faq{
+  border:1px solid var(--border);border-radius:14px;
+  background:var(--surface);overflow:hidden;
+}
+.faq summary{
+  list-style:none;cursor:pointer;
+  padding:22px 26px;
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+  font-family:'Geist',sans-serif;font-weight:600;font-size:1.05rem;
+  letter-spacing:-.01em;
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{
+  content:"+";font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:1.4rem;
+  transition:transform .25s;
+}
+.faq[open] summary::after{transform:rotate(45deg)}
+.faq p{padding:0 26px 24px;color:var(--text-dim);max-width:720px}
+
+/* FINAL */
+.final{
+  text-align:center;
+  padding:clamp(110px,14vw,180px) 0;
+  border-top:1px solid var(--border);
+  background:radial-gradient(60% 60% at 50% 0%,rgba(198,255,61,.06),transparent 60%),var(--bg);
+}
+.final h2{font-size:clamp(2.4rem,6vw,4.4rem);letter-spacing:-.03em;line-height:1;max-width:900px;margin:0 auto 22px}
+.final p{color:var(--text-dim);margin-bottom:34px;font-size:1.1rem}
+
+/* WAITLIST */
+.waitlist{border-top:1px solid var(--border);padding:90px 0;background:var(--surface)}
+.waitlist h2{font-size:clamp(1.8rem,3.6vw,2.6rem);letter-spacing:-.02em;margin-bottom:14px;text-align:center}
+.waitlist p{color:var(--text-dim);text-align:center;margin-bottom:32px}
+.waitlist form{display:flex;gap:10px;max-width:520px;margin:0 auto;flex-wrap:wrap}
+.waitlist input{flex:1;min-width:160px;padding:13px 16px;border-radius:8px;background:var(--bg);border:1px solid var(--border);color:var(--text);font:inherit;font-size:.95rem}
+.waitlist input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(198,255,61,.15)}
+.waitlist .btn{justify-content:center}
+@media(max-width:520px){.waitlist input,.waitlist .btn{width:100%;flex-basis:100%}}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:42px 0;color:var(--text-dim);font-size:.88rem}
+.foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.foot .links{display:flex;gap:22px}
+.foot .links a:hover{color:var(--text)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease-out,transform .6s ease-out;transition-delay:calc(var(--i,0) * 80ms)}
+.reveal.in-view{opacity:1;transform:none}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1!important;transform:none!important}
+  .ticker-track{animation:none!important}
+  .h1 .line span{clip-path:inset(0 0 0 0)!important}
+  .eyebrow{width:auto!important}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+  <div class="container nav-inner">
+    <a href="#" class="brand"><span class="dot"></span>remixsafe<span class="chev">&nbsp;▸</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="nav-cta">
+      <a href="#" class="nav-signin">Sign in</a>
+      <a href="#pricing" class="btn btn-primary">Get started free</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow mono">// stop fighting the algorithm</span>
+      <h1 class="h1">
+        <span class="line"><span>Stop getting</span></span>
+        <span class="line"><span><em>throttled</em> for posting</span></span>
+        <span class="line"><span>your own video.</span></span>
+      </h1>
+      <p class="hero-sub">RemixSafe takes one source video and spins out N platform-unique variants — perturbed audio fingerprint, shifted visual hash, freshly rewritten captions — so every account you run posts something the algorithm treats as original.</p>
+      <div class="cta-row">
+        <a href="#pricing" class="btn btn-primary">Generate my first 10 variants — free</a>
+        <a href="#how" class="btn btn-ghost">See it work ↓</a>
+      </div>
+      <div class="hero-meta mono">
+        <span><i class="pip" aria-hidden="true"></i> no card required</span>
+        <span><i class="pip" aria-hidden="true"></i> 10 free variants</span>
+        <span><i class="pip" aria-hidden="true"></i> 90-second renders</span>
+      </div>
+    </div>
+
+    <div class="fan" id="fan">
+      <div class="source-card">
+        <div class="label"><span>SOURCE.mp4</span><span class="tag">●&nbsp;LIVE</span></div>
+        <div class="play"><svg viewBox="0 0 12 14" fill="currentColor"><path d="M0 0l12 7L0 14z"/></svg></div>
+        <div class="label"><span>00:42</span><span>1920×1080</span></div>
+      </div>
+      <div class="fan-arrow"></div>
+      <div class="variants">
+        <div class="v-card"><div class="v-top"><span class="v-name">var_01</span><span class="v-dot"></span></div><span class="v-diff">+0.12dB</span></div>
+        <div class="v-card"><div class="v-top"><span class="v-name">var_02</span><span class="v-dot"></span></div><span class="v-diff">hash Δ 0x4f</span></div>
+        <div class="v-card"><div class="v-top"><span class="v-name">var_03</span><span class="v-dot"></span></div><span class="v-diff">caption v2</span></div>
+        <div class="v-card"><div class="v-top"><span class="v-name">var_04</span><span class="v-dot"></span></div><span class="v-diff">−0.08dB</span></div>
+        <div class="v-card"><div class="v-top"><span class="v-name">var_05</span><span class="v-dot"></span></div><span class="v-diff">hash Δ 0x9c</span></div>
+        <div class="v-card"><div class="v-top"><span class="v-name">var_06</span><span class="v-dot"></span></div><span class="v-diff">caption v3</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker">
+  <div class="ticker-track" id="ticker">
+    <span>fingerprint Δ</span><span>audio perturbed</span><span>captions rewritten</span><span>hash shifted</span><span>zero duplicate flags</span>
+    <span>fingerprint Δ</span><span>audio perturbed</span><span>captions rewritten</span><span>hash shifted</span><span>zero duplicate flags</span>
+    <span>fingerprint Δ</span><span>audio perturbed</span><span>captions rewritten</span><span>hash shifted</span><span>zero duplicate flags</span>
+  </div>
+</div>
+
+<!-- BEFORE / AFTER -->
+<section id="why">
+  <div class="container">
+    <span class="section-eyebrow mono reveal">// the problem</span>
+    <h2 class="section-title reveal" style="--i:1">The repost tax is real. We refund it.</h2>
+    <p class="section-sub reveal" style="--i:2">Duplicate detection runs on every upload. Same audio fingerprint = throttle. Same frame hash = throttle. Doesn't matter that you own the file.</p>
+
+    <div class="ba-grid">
+      <div class="ba-card before reveal" style="--i:3">
+        <span class="tag">BEFORE</span>
+        <p class="ba-text">"Your repost hits 200 views and dies. Throttled by duplicate detection — again."</p>
+        <div>
+          <div class="ba-meter"></div>
+          <div class="ba-foot mono"><span>reach.score</span><span>0.12</span></div>
+        </div>
+      </div>
+      <div class="ba-card after reveal" style="--i:4">
+        <span class="tag">AFTER</span>
+        <p class="ba-text">"Same clip, 50 unique variants. Every account sees full distribution."</p>
+        <div>
+          <div class="ba-meter"></div>
+          <div class="ba-foot mono"><span>reach.score</span><span style="color:var(--accent)">0.96</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how" style="padding-top:0">
+  <div class="container">
+    <span class="section-eyebrow mono reveal">// how it works</span>
+    <h2 class="section-title reveal" style="--i:1">Three steps. No timeline editor required.</h2>
+
+    <div class="steps">
+      <div class="step reveal" style="--i:2">
+        <div class="num">01 — Upload</div>
+        <h3>Drop your source video.</h3>
+        <p>Up to 200MB, any platform format.</p>
+      </div>
+      <div class="step reveal" style="--i:3">
+        <div class="num">02 — Remix</div>
+        <h3>Pick a preset + count.</h3>
+        <p>Choose platform and variant count (up to 50). We do the rest.</p>
+      </div>
+      <div class="step reveal" style="--i:4">
+        <div class="num">03 — Download</div>
+        <h3>ZIP of ready-to-post MP4s.</h3>
+        <p>N variants in under 90 seconds. Drop them straight into your scheduler.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" style="padding-top:0">
+  <div class="container">
+    <span class="section-eyebrow mono reveal">// what you get</span>
+    <h2 class="section-title reveal" style="--i:1">Built for operators who post at scale.</h2>
+
+    <div class="features">
+      <div class="feat reveal" style="--i:2">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
+        <h3>Kill the 2-hour grind.</h3>
+        <p>Stop the 2-hour CapCut grind. Upload once, get 50 variants in under 4 minutes.</p>
+      </div>
+      <div class="feat reveal" style="--i:3">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg></div>
+        <h3>A/B hooks before you scale.</h3>
+        <p>A/B test hooks across accounts. See which remix pulls views before you scale it.</p>
+      </div>
+      <div class="feat reveal" style="--i:4">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+        <h3>20 accounts, zero flags.</h3>
+        <p>Post the same idea to 20 accounts without the throttle. Each variant reads as net-new content.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats" id="stats">
+  <div class="container stats-grid">
+    <div class="stat reveal"><div class="n"><span data-from="1" data-to="50">1</span>+</div><div class="l">up to 50 variants per source</div></div>
+    <div class="stat reveal" style="--i:1"><div class="n">&lt;<span data-from="0" data-to="90">0</span>s</div><div class="l">avg render time</div></div>
+    <div class="stat reveal" style="--i:2"><div class="n">0</div><div class="l">false-positive flags in beta</div></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <span class="section-eyebrow mono reveal">// pricing</span>
+    <h2 class="section-title reveal" style="--i:1">Pick a tier. Cancel whenever.</h2>
+    <p class="section-sub reveal" style="--i:2">No "contact sales" nonsense. No annual lock-in tricks.</p>
+
+    <div class="price-grid">
+      <div class="price reveal" style="--i:3">
+        <h3>solo</h3>
+        <div class="amt">$29<span> / mo</span></div>
+        <ul>
+          <li>100 variants per month</li>
+          <li>TikTok + Reels + Shorts presets</li>
+          <li>Audio + visual + caption remixing</li>
+          <li>1080p export</li>
+        </ul>
+        <a href="#waitlist" class="btn">Start with Solo</a>
+      </div>
+
+      <div class="price popular reveal" style="--i:4">
+        <span class="badge">MOST POPULAR</span>
+        <h3>operator</h3>
+        <div class="amt">$89<span> / mo</span></div>
+        <ul>
+          <li>500 variants per month</li>
+          <li>Bulk upload (20 sources at once)</li>
+          <li>Variant A/B tracking</li>
+          <li>Priority render queue</li>
+        </ul>
+        <a href="#waitlist" class="btn btn-primary">Start with Operator</a>
+      </div>
+
+      <div class="price reveal" style="--i:5">
+        <h3>agency</h3>
+        <div class="amt">$249<span> / mo</span></div>
+        <ul>
+          <li>2,000 variants per month</li>
+          <li>Team seats</li>
+          <li>White-label exports</li>
+          <li>API access</li>
+        </ul>
+        <a href="#waitlist" class="btn">Start with Agency</a>
+      </div>
+    </div>
+
+    <p class="price-note">// all plans: cancel anytime. no "contact sales" nonsense.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="padding-top:0">
+  <div class="container">
+    <span class="section-eyebrow mono reveal">// objections, answered</span>
+    <h2 class="section-title reveal" style="--i:1">The stuff you were about to ask.</h2>
+
+    <div class="faq-list">
+      <details class="faq reveal" style="--i:2"><summary>Isn't this just spam?</summary><p>No. Every output is a legitimate creative variation — different audio mix, recut pacing, rewritten hook. You bring the idea. We kill the busywork.</p></details>
+      <details class="faq reveal" style="--i:3"><summary>I already use Opus Clip / Repurpose.io.</summary><p>Those tools repurpose long-form into shorts. They don't touch audio fingerprints or frame hashes. Use them together — we're the layer that makes output postable at scale.</p></details>
+      <details class="faq reveal" style="--i:4"><summary>Is $89/mo worth it?</summary><p>You're spending 8+ hours a week in CapCut. At $20/hr that's $640/month of your time. Operator pays for itself the first week.</p></details>
+      <details class="faq reveal" style="--i:5"><summary>Does it work for all platforms?</summary><p>Yes — TikTok, YouTube Shorts, and Instagram Reels each get their own preset (aspect ratio, bitrate, duration cap).</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final">
+  <div class="container">
+    <h2 class="reveal">Post like every account<br>is its first.</h2>
+    <p class="reveal" style="--i:1">One upload. Fifty originals. See it for free.</p>
+    <a href="#waitlist" class="btn btn-primary reveal" style="--i:2">Start free — no card</a>
+  </div>
+</section>
+
+<section id="waitlist" class="waitlist">
+  <div class="container">
+    <h2 class="reveal">Join the waitlist.</h2>
+    <p class="reveal" style="--i:1">First 500 get founding-operator pricing locked for life.</p>
+    <form class="reveal" style="--i:2" action="mailto:hi@remixsafe.com" method="post" enctype="text/plain">
+      <input type="text" name="name" placeholder="Your name" required aria-label="Your name">
+      <input type="email" name="email" placeholder="you@domain.com" required aria-label="Email address">
+      <button type="submit" class="btn btn-primary">Join waitlist</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="container foot">
+    <span class="mono">remixsafe — one upload, infinite originals.</span>
+    <div class="links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="mailto:hi@remixsafe.com">hi@remixsafe.com</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // FAN animation loop
+  const fan = document.getElementById('fan');
+  function fire(){ fan.classList.remove('go'); void fan.offsetWidth; fan.classList.add('go'); }
+  setTimeout(fire, 600);
+  if(!reduce) setInterval(fire, 8000);
+
+  // NAV hide on scroll down
+  const nav = document.getElementById('nav');
+  let lastY = 0;
+  addEventListener('scroll', () => {
+    const y = scrollY;
+    const delta = y - lastY;
+    if(Math.abs(delta) < 6){ return; }
+    if(delta > 0 && y > 200) nav.style.transform = 'translateY(-100%)';
+    else nav.style.transform = 'translateY(0)';
+    lastY = y;
+  }, {passive:true});
+
+  // REVEAL on scroll
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in-view'); io.unobserve(e.target);} });
+  }, {threshold:.12, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // COUNT UP
+  const stats = document.getElementById('stats');
+  let counted = false;
+  const sObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting && !counted){
+        counted = true;
+        stats.querySelectorAll('[data-to]').forEach(el => {
+          const from = +el.dataset.from, to = +el.dataset.to;
+          const dur = 1200, t0 = performance.now();
+          function step(t){
+            const p = Math.min(1, (t - t0)/dur);
+            const eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = Math.round(from + (to - from) * eased);
+            if(p < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+        });
+      }
+    });
+  }, {threshold:.4});
+  sObs.observe(stats);
+})();
+</script>
+</body>
+</html>

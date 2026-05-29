@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Billing — RemixSafe</title>
+<meta name="theme-color" content="#0A0B0D">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A0B0D'/%3E%3Cpath d='M8 22V10h6.2a3.8 3.8 0 0 1 1.6 7.25L19 22h-3l-2.8-4.6H11V22H8Zm3-7h2.8a1.4 1.4 0 0 0 0-2.8H11V15Z' fill='%23C6FF3D'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/theme.css">
+</head>
+<body>
+
+<div id="nav-mount"></div>
+
+<main class="container page">
+
+  <div class="page-head">
+    <div>
+      <h1>Plans</h1>
+      <p class="dim" style="margin-top:6px">RemixSafe is free during beta. Paid plans coming soon.</p>
+    </div>
+  </div>
+
+  <!-- BETA BANNER -->
+  <div class="card" style="display:flex;align-items:center;gap:16px;margin-bottom:32px;border-color:var(--accent);background:rgba(198,255,61,0.04)">
+    <div style="font-size:1.5rem">🎉</div>
+    <div>
+      <div style="font-weight:600;color:var(--accent)">You're on the free beta plan</div>
+      <div class="dim" style="font-size:.9rem;margin-top:2px">Unlimited remixes during beta. Join the waitlist to lock in early pricing when paid plans launch.</div>
+    </div>
+  </div>
+
+  <!-- PLANS -->
+  <div class="section-title" style="margin-bottom:14px">// upcoming plans — join waitlist to lock pricing</div>
+  <div class="grid-3">
+
+    <div class="plan">
+      <h3>Solo</h3>
+      <div class="price">$29<small> / mo</small></div>
+      <ul>
+        <li>100 remixes / month</li>
+        <li>All 3 platform presets</li>
+        <li>ZIP downloads</li>
+        <li>Email support</li>
+      </ul>
+      <button class="btn" onclick="joinWaitlist('solo')">Join waitlist →</button>
+    </div>
+
+    <div class="plan featured">
+      <span class="badge">Most popular</span>
+      <h3>Operator</h3>
+      <div class="price">$89<small> / mo</small></div>
+      <ul>
+        <li>500 remixes / month</li>
+        <li>Priority queue</li>
+        <li>Custom audio perturb intensity</li>
+        <li>API access (beta)</li>
+      </ul>
+      <button class="btn btn-primary" onclick="joinWaitlist('operator')">Join waitlist →</button>
+    </div>
+
+    <div class="plan">
+      <h3>Agency</h3>
+      <div class="price">$249<small> / mo</small></div>
+      <ul>
+        <li>2,000 remixes / month</li>
+        <li>5 team seats</li>
+        <li>Webhook integrations</li>
+        <li>Slack support channel</li>
+      </ul>
+      <button class="btn" onclick="joinWaitlist('agency')">Join waitlist →</button>
+    </div>
+
+  </div>
+
+  <p class="dim" style="margin-top:32px;font-size:.85rem;text-align:center">
+    Waitlist members get <span class="mono" style="color:var(--accent)">30% off</span> first 3 months when billing launches.
+  </p>
+
+  <!-- WAITLIST MODAL -->
+  <div id="waitlist-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center">
+    <div class="card" style="max-width:420px;width:90%;padding:32px">
+      <div class="section-title" style="margin-bottom:16px">// join waitlist — <span id="modal-plan" style="color:var(--accent)">operator</span> plan</div>
+      <p class="dim" style="margin-bottom:20px;font-size:.9rem">We'll email you when paid plans launch. Waitlist members get 30% off first 3 months.</p>
+      <form id="waitlist-form">
+        <input id="wl-name" type="text" placeholder="Your name" required style="width:100%;margin-bottom:12px;padding:10px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:inherit;font-size:.95rem;box-sizing:border-box">
+        <input id="wl-email" type="email" placeholder="Email address" required style="width:100%;margin-bottom:20px;padding:10px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:inherit;font-size:.95rem;box-sizing:border-box">
+        <div style="display:flex;gap:10px">
+          <button type="submit" class="btn btn-primary" style="flex:1">Join waitlist</button>
+          <button type="button" class="btn" onclick="closeModal()">Cancel</button>
+        </div>
+      </form>
+      <div id="wl-success" style="display:none;text-align:center;padding:16px 0">
+        <div style="font-size:1.5rem;margin-bottom:8px">✅</div>
+        <div style="color:var(--accent);font-weight:600">You're on the list!</div>
+        <div class="dim" style="font-size:.9rem;margin-top:4px">We'll email you when billing launches.</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/app/shared.js"></script>
+<script>
+(async () => {
+  const session = await requireAuth();
+  if (!session) return;
+  document.getElementById('nav-mount').innerHTML = renderNav('billing', '∞');
+})();
+
+let selectedPlan = 'solo';
+
+function joinWaitlist(plan) {
+  selectedPlan = plan;
+  document.getElementById('modal-plan').textContent = plan;
+  const modal = document.getElementById('waitlist-modal');
+  modal.style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('waitlist-modal').style.display = 'none';
+  document.getElementById('wl-success').style.display = 'none';
+  document.getElementById('waitlist-form').style.display = 'block';
+}
+
+document.getElementById('waitlist-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('wl-name').value;
+  const email = document.getElementById('wl-email').value;
+  // Store in Supabase waitlist table if available, or just mailto fallback
+  try {
+    const { getSupabase } = await import('/app/shared.js').catch(() => ({}));
+    const sb = window._supabase;
+    if (sb) {
+      await sb.from('waitlist').insert({ name, email, plan: selectedPlan }).maybeSingle();
+    }
+  } catch (_) {}
+  document.getElementById('waitlist-form').style.display = 'none';
+  document.getElementById('wl-success').style.display = 'block';
+});
+
+// Close modal on backdrop click
+document.getElementById('waitlist-modal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeModal();
+});
+</script>
+</body>
+</html>

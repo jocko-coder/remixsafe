@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in — RemixSafe</title>
+<meta name="theme-color" content="#0A0B0D">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A0B0D'/%3E%3Cpath d='M8 22V10h6.2a3.8 3.8 0 0 1 1.6 7.25L19 22h-3l-2.8-4.6H11V22H8Zm3-7h2.8a1.4 1.4 0 0 0 0-2.8H11V15Z' fill='%23C6FF3D'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/theme.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="/" class="brand"><span class="dot"></span>RemixSafe</a>
+    <div class="nav-cta">
+      <a href="/app/signup.html" class="btn btn-sm btn-ghost">Create account</a>
+    </div>
+  </div>
+</nav>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h1>Sign in</h1>
+    <p class="sub">Welcome back. Time to remix.</p>
+
+    <form id="form">
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" autocomplete="email" required placeholder="you@channel.com">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" required minlength="6" placeholder="••••••••">
+      </div>
+      <button class="btn btn-primary" type="submit" id="submit">Sign in</button>
+    </form>
+
+    <p class="auth-foot">
+      Don't have an account? <a href="/app/signup.html">Sign up</a>
+    </p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/app/shared.js"></script>
+<script>
+document.getElementById('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submit');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  try {
+    const { error } = await window.sb.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    window.location.href = '/app/index.html';
+  } catch (err) {
+    toast(err.message || 'Sign in failed', 'error');
+    btn.disabled = false; btn.textContent = 'Sign in';
+  }
+});
+</script>
+</body>
+</html>
