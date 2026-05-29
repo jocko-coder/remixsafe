@@ -8,11 +8,11 @@ RUN apt-get update \
 WORKDIR /app
 
 # Install node deps first for layer caching
-COPY package.json ./
+COPY worker/package.json ./
 RUN npm install --omit=dev --no-audit --no-fund
 
 # Copy source
-COPY src ./src
+COPY worker/src ./src
 
 ENV NODE_ENV=production
 
