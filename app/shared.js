@@ -2,8 +2,8 @@
 // In production these come from a build step or window-injected config.
 // For now we use placeholders — replace via .env when deployed.
 window.REMIXSAFE_CONFIG = {
-  SUPABASE_URL: 'https://your-project.supabase.co',
-  SUPABASE_ANON_KEY: 'your-anon-key-here',
+  SUPABASE_URL: 'https://e7yjiv10y4tjkxt5.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_e7yjIV10Y4TjkXt5-1f83g_dFYafSh9',
   FUNCTIONS_BASE: '/.netlify/functions',
 };
 
